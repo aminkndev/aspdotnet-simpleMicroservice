@@ -7,9 +7,11 @@ public class CallbackHandler(IPaymentClient paymentClient) : IRequestHandler<Cal
 {
     public async Task<CallbackResponseDto> Handle(CallbackCommand command, CancellationToken ct)
     {
+        
         var result = command.Result;
 
         var verify = await paymentClient.VerifyPaymentTokenAsync(result.Token);
+
         if (verify is not { IsSuccess: true })
         {
             return new CallbackResponseDto
@@ -20,9 +22,10 @@ public class CallbackHandler(IPaymentClient paymentClient) : IRequestHandler<Cal
             };
         }
 
-        var updateOk = await paymentClient.UpdatePaymentStatusAsync(result.Token, result.IsSuccess, result.Rrn);
-
-        var message = result.IsSuccess ? "پرداخت با موفقیت انجام شد" : "پرداخت ناموفق بود";
+        var updateOk = await paymentClient.UpdatePaymentStatusAsync(
+            result.Token,
+            result.IsSuccess,
+            result.Rrn);
 
         return new CallbackResponseDto
         {
@@ -30,8 +33,11 @@ public class CallbackHandler(IPaymentClient paymentClient) : IRequestHandler<Cal
             Token = result.Token,
             Rrn = result.Rrn,
             Amount = verify.Amount,
-            Message = message,
+            Message = result.IsSuccess
+                ? "پرداخت با موفقیت انجام شد"
+                : "پرداخت ناموفق بود",
             RedirectUrl = verify.RedirectUrl
         };
+
     }
 }
