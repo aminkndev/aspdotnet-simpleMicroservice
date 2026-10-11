@@ -60,7 +60,7 @@ docker run -d --hostname rabbitmq --name rabbitmq -p 5672:5672 -p 15672:15672 ra
 ```
 سپس در مرورگر باز کنید:  
 👉 [http://localhost:15672](http://localhost:15672)  
-نام کاربری و رمز عبور: `guest / guest`
+نام کاربری و رمز عبور: `test / test`
 
 ---
 
